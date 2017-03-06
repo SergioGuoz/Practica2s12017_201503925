@@ -591,6 +591,58 @@ class Matriz(object):
 					self.filAux=self.filAux.abajo
 					print self.filAux.abajo
 				pass
+	
+	def eliminarCorreo(self,dato):
+
+			mail=""
+			nombre=""
+			"""Nombre de correo"""
+			for x in xrange(0,len(dato)):
+				nombre=nombre+dato[x]
+				if dato[x+1]=='@':
+					x=x+1
+					while (x<len(dato)):
+						mail=mail+dato[x]
+						x=x+1
+					pass
+					break	
+			pass
+			
+			print dato + " "+nombre+" "+mail
+			self.colAux=self.filAux=self.filAux2=self.colAux2=self.first
+			while(self.colAux!=None):
+				
+				if(self.colAux.getDato()==mail):
+					
+					while (self.colAux!=None):
+						if self.colAux.getDato()==nombre:
+
+							if self.colAux.atras!=None:
+								self.colAux=self.colAux.atras
+								pass
+							else:
+								if self.colAux.arriba.arriba==None:
+									self.colAux.arriba.ant.sig=self.colAux.arriba.sig
+									pass
+								else:
+									self.colAux.arriba.abajo=self.colAux.abajo
+								if self.colAux.ant.ant==None and self.colAux.sig==None:
+									self.colAux.ant.arriba.abajo=self.colAux.ant.abajo	
+									pass
+								else:
+									self.colAux.ant=self.colAux.sig
+							pass
+						self.colAux=self.colAux.abajo
+						pass
+					pass
+				pass
+				if self.colAux!=None:
+					self.colAux=self.colAux.sig
+					pass
+				else:
+					break
+				
+			pass
 		
 
 
@@ -663,6 +715,11 @@ def buscarDom():
 	
 	return m.dominioBuscar(par)
 
+@app.route('/eliminarcorreo',methods=['POST'])
+def eliminarMail():
+	par= str(request.form['mail'])
+	m.eliminarCorreo(par)
+	return "Correo Eliminado"
 
 """"""
 @app.route("/")

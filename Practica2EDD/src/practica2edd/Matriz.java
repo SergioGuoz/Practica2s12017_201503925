@@ -158,7 +158,11 @@ Inicio n=new Inicio();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
+        RequestBody form= new FormEncodingBuilder()
+                .add("mail", jTextField2.getText())
+                .build();
+            String resp= getString("eliminarcorreo", form);
+            System.out.println(resp);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
