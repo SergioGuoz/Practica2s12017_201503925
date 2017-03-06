@@ -618,7 +618,8 @@ class Matriz(object):
 						if self.colAux.getDato()==nombre:
 
 							if self.colAux.atras!=None:
-								self.colAux=self.colAux.atras
+								self.colAux.ant.sig=self.colAux.atras
+							
 								pass
 							else:
 								if self.colAux.arriba.arriba==None:
@@ -643,7 +644,69 @@ class Matriz(object):
 					break
 				
 			pass
+	
+	def generarCuerpo(self, lista):
+		cont=0
+		archivoDot=""
+		while cont<lista.getSize()-1:
+			archivoDot=archivoDot+lista.extraer(cont)+"->"+lista.extraer(cont+1)+"; \n"
+			cont=cont+1
+			pass
+		return archivoDot
+
+
+	def generarMatriz(self):
+		archivoDot="digraph grafo{ \n"
+		g=self.first.sig
+		lscol=ListaEnlazada()
+		lsenc=ListaEnlazada()
+		g2=g
+		body=""
+		while g!=None:
+				lscol.insertar(self.quitarArroba(g.getDato()))
+				lsenc.insertar(self.quitarArroba(g.getDato()))
+				g=g.abajo
+				while g!=None:
+					lscol.insertar(g.getDato())
+					g=g.abajo
+					pass
+				body=body+self.generarCuerpo(lscol)+"\n"
+				lscol=ListaEnlazada()
+				g2=g2.sig
+				g=g2
+		pass
+		body=body+self.generarCuerpo(lsenc)+"\n"
+		g=self.first.abajo
+		lscol2=ListaEnlazada()
+		lsfil=ListaEnlazada()
+		g2=g
+
+		while g!=None:
+				lscol2.insertar(g.getDato())
+				lsfil.insertar(g.getDato())
+				g=g.sig
+				while g!=None:
+					lscol2.insertar(g.getDato())
+					g=g.sig
+					pass
+				body=body+self.generarCuerpo(lscol2)+"\n"
+				lscol2=ListaEnlazada()
+				g2=g2.abajo
+				g=g2
+		pass
+		body=body+self.generarCuerpo(lsfil)+"\n"
 		
+		archivoDot=archivoDot+body
+
+		archivoDot=archivoDot+"\n }"
+		try:
+			arch=open("C:\graphviz-2.38\\release\EDD\\"+"ortogonal.dot","w")
+			arch.write(archivoDot)
+			arch.close()
+			os.system('C:\graphviz-2.38\\release\\bin\dot.exe -Tpng C:\graphviz-2.38\\release\EDD\ortogonal.dot -o C:\graphviz-2.38\\release\EDD\ortogonal.png')
+			pass
+		except Exception as e:
+			raise e
 
 
 
@@ -702,6 +765,7 @@ def dequeue():
 def addMatrz():
 	par=str(request.form['dato'])
 	m.agregar(par)
+	m.generarMatriz()
 	return "Added"
 
 @app.route('/buscarletra',methods=['POST'])
