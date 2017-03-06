@@ -53,7 +53,7 @@ class ListaEnlazada(object):
 		nodotem2=self.first
 		index=index-1
 
-		while(contador<index):
+		while(contador<=index):
 			
 			if contador== index:
 				nodotem.sig=nodotem.sig.sig
@@ -619,6 +619,7 @@ class Matriz(object):
 
 							if self.colAux.atras!=None:
 								self.colAux.ant.sig=self.colAux.atras
+								self.colAux=self.colAux.atras
 							
 								pass
 							else:
@@ -695,7 +696,7 @@ class Matriz(object):
 				g=g2
 		pass
 		body=body+self.generarCuerpo(lsfil)+"\n"
-		
+
 		archivoDot=archivoDot+body
 
 		archivoDot=archivoDot+"\n }"
@@ -783,6 +784,7 @@ def buscarDom():
 def eliminarMail():
 	par= str(request.form['mail'])
 	m.eliminarCorreo(par)
+	m.generarMatriz()
 	return "Correo Eliminado"
 
 """"""
