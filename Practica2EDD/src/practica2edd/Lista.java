@@ -146,7 +146,8 @@ public class Lista extends javax.swing.JFrame {
         RequestBody formbody= new FormEncodingBuilder()
                 .add("eliminar",jTextField2.getText())
                 .build();
-        getString("lista/eliminar", formbody);
+        String resp=getString("lista/eliminar", formbody);
+        System.out.println(resp);
         
     }//GEN-LAST:event_jButton2ActionPerformed
 

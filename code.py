@@ -46,7 +46,8 @@ class ListaEnlazada(object):
 			self.last.sig=nuevo
 			self.last=nuevo
 
-	def eliminar(self,index):
+	def eliminar(self,ind):
+		index=int(ind)
 		contador=0
 		nodotem=self.first
 		nodotem2=self.first
@@ -55,14 +56,12 @@ class ListaEnlazada(object):
 		while(contador<index):
 			
 			if contador== index:
-				print "Entra"
 				nodotem.sig=nodotem.sig.sig
 				break
-				pass
-			print "no"
+			pass
 			nodotem=nodotem.sig
 			contador=contador+1
-			pass
+		pass
 
 	def extraer(self, indice):
 		nodotem=self.first
@@ -94,7 +93,7 @@ class ListaEnlazada(object):
 		cont=0
 		for x in xrange(0,self.getSize()):
 			if notem.getDato()==cadena:
-				return x
+				return "Indice "+ str(x)
 				break
 			notem=notem.sig
 			pass
@@ -111,6 +110,18 @@ class Cola(object):
 			return True
 		else:
 			return False
+
+	def archivoCola(self):
+		ax=self.first
+		ls=ListaEnlazada()
+		mat=Matriz()
+		while(ax!=None):
+			ls.insertar(ax.getDato())
+			ax=ax.sig
+			pass
+		mat.crearArchivo(ls,"cola.dot","cola.png")
+		pass
+	
 
 	def insertar(self, dato):
 		nuevo=Nodo(dato)
@@ -140,6 +151,17 @@ class Pila(object):
 			return True
 		else:
 			return False
+
+	def archivoPila(self):
+		ax=self.first
+		ls=ListaEnlazada()
+		mat=Matriz()
+		while(ax!=None):
+			ls.insertar(ax.getDato())
+			ax=ax.sig
+			pass
+		mat.crearArchivo(ls,"pila.dot","pila.png")
+		pass
 
 	def insertar(self, dato):
 		nuevo=Nodo(dato)
@@ -296,7 +318,7 @@ class Matriz(object):
 			pass
 		except Exception as e:
 			raise e
-		
+	
 	def printDatosCol(self):
 		axc=self.first
 		axc2=self.first
@@ -329,21 +351,32 @@ class Matriz(object):
 		axc3=axc2
 		colData=""
 		lisdom=ListaEnlazada()
-
+		indice=0
 		while (axc!=None):
 			#print axc.getDato()
 			if axc2!=None and dom==axc2.getDato():
 				while (axc2!=None):
-					colData=colData+axc2.getDato()+", "
-					print axc2.getDato()
-					axc3=axc2.atras
-					while(axc3!=None):
-						print axc3.getDato()
-						colData= colData+" , "+axc3.getDato()
-						axc3=axc3.atras
-					pass
-					axc2=axc2.abajo
-					axc3=axc2
+						
+						if indice==0:
+							colData=colData+axc2.getDato()+", "
+							sinC=self.quitarArroba(axc2.getDato())
+							lisdom.insertar(sinC)
+							indice=indice+1
+							pass	
+						else:
+							colData=colData+" , "+axc2.getDato()
+							lisdom.insertar(axc2.getDato())
+							axc3=axc2.atras
+						pass
+						axc3=axc2.atras
+						while(axc3!=None):
+							print "esta entrando aca"
+							lisdom.insertar(axc3.getDato())
+							colData= colData+" , "+axc3.getDato()
+							axc3=axc3.atras
+						pass
+						axc2=axc2.abajo
+						axc3=axc2
 				pass
 			pass
 			axc=axc.sig
@@ -353,6 +386,14 @@ class Matriz(object):
 		self.crearArchivo(lisdom,"matrizCol.dot","matrizCol.png")
 		return "Resultado: "+ colData
 
+	def quitarArroba(sef, mailarr):
+		cont=1
+		sinA=""
+		while cont<len(mailarr)-4:
+			sinA=sinA+mailarr[cont]
+			cont=cont+1
+			pass
+		return sinA
 	def imprimir(self):
 		self.head=self.first
 		son=self.first
@@ -559,41 +600,50 @@ class Matriz(object):
 def addLista():
 	par= str(request.form['agregar'])
 	ls.insertar(par)
+	m.crearArchivo(ls,"listaenl.dot","listaenl.png")
 	return "Added"
 
 @app.route('/lista/buscar',methods=['POST'])
 def buscarL():	
 	parb= str(request.form['buscar'])
+	m.crearArchivo(ls,"listaenl.dot","listaenl.png")
 	return ls.buscar(parb) 
 
 @app.route('/lista/eliminar',methods=['POST'])
 def eliminarL():
 	pare= str(request.form['eliminar'])
 	ls.eliminar(pare)
+	m.crearArchivo(ls,"listaenl.dot","listaenl.png")
 	return "Eliminado" 
 """PILA"""
 @app.route('/pila',methods=['POST'])
 def addPila():
 	par= str(request.form['add'])
 	p.insertar(par)
+	p.archivoPila()
 	return "Added"
 
 @app.route('/pop',methods=['POST'])
 def pop():
 	par= str(request.form['pop'])
-	return "POP: "+p.extraer() 
+	pop=p.extraer()
+	p.archivoPila()
+	return "POP: "+pop 
 
 """COLA"""
 @app.route('/cola',methods=['POST'])
 def addCola():
 	par= str(request.form['addC'])
 	c.insertar(par)
+	c.archivoCola()
 	return "Added"
 
 @app.route('/dequeue',methods=['POST'])
 def dequeue():
 	par= str(request.form['deq'])
-	return "DEQUEUE: "+c.extraer() 
+	var=c.extraer()
+	c.archivoCola()
+	return "DEQUEUE: "+var 
 
 """MATRIZ"""
 @app.route('/addmatriz',methods=['POST'])
