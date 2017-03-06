@@ -1,0 +1,95 @@
+import dlex;
+import java_cup.runtime.*;
+
+parser code
+{:
+    @Override
+    public void syntax_error(Symbol s){
+        System.out.println(s+ "Línea: "+ s.left+1 +" Columna: "+s.right+" "+(String)s.value);
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.out.println(s+ "Línea: "+ s.left+1 +" Columna: "+s.right+" "+(String)s.value);
+    }
+:}
+
+action code
+{:
+:}
+
+terminal String CORCA, CORCC, LLAB, LLAC, PABIERTO, PCERRADO,SIGMENOS,MAYORQUE,PUNTOYCOMA,
+                PORCENTAJE,DOSPUNTOS,SIGNOMAS,ASTERISCO,INTERROG,PUNTO,COMA,BARRA,VIRGULILLA,
+                DIAGONAL,BARRAINV,CSIMPLE, CADENA,NUMERO, ID, SPACE;
+non terminal inicio;
+non terminal String cuerpo, instruccion, defconj, ferror, sentencias, expresion, funerror;
+non terminal String otraexp, return, reservada, funcion, otrainstr, conjnum, conjlet, otronum, otra letra
+start with inicio
+
+inicio::= PORCENTAJE PORCENTAJE cuerpo PORCENTAJE PORCENTAJE
+;
+
+cuerpo::= sentencias
+
+sentencias::=instruccion sentencias
+            |CONJ DOSPUNTOS ID SIGMENOS MAYORQUE defconj sentencias
+            |ferror sentencias
+            |
+;
+ferror::= ID SIGMENOS MAYOR QUE expresion SIGMENOS MAYORQUE funerror PUNTOYCOMA
+;
+funerror::= PABIERTO LETRAS COMA LETRAS COMA LETRAS PCERRADO
+;
+
+expresion::= ID otraexp
+            |PUNTO otraexp
+            |ASTERISCO otraexp
+            |SIGNOMAS otraexp
+            |INTERROG otraexp
+            |CADENA otraexp
+            |NUM otraexp
+            |CORCA DOSPUNTOS TODO DOSPUNTOS CORCC otraexp
+            |BARRA otraexp
+;
+otraexp::=  ID otraexp
+            |PUNTO otraexp
+            |ASTERISCO otraexp
+            |SIGNOMAS otraexp
+            |INTERROG otraexp
+            |CADENA otraexp
+            |NUM otraexp
+            |CORCA DOSPUNTOS TODO DOSPUNTOS CORCC otraexp
+            |BARRA otraexp
+            |
+;
+instruccion::=ID SIGMENOS MAYORQUE expresion SIGMENOS MAYORQUE RETORNO return
+;
+return ::= PABIERTO CADENA COMA LETRAS COMA LETRAS COMA LETRAS PCERRADO reservada
+;
+reservada::=  SIGMENOS MAYORQUE RESERV CORCA instrreserv CORCC PUNTOYCOMA
+            |
+;
+instrreserv::= CADENA SIGMENOS MAYORQUE RETORNO funcion    
+;
+
+funcion::= PABIERTO CADENA COMA LETRAS COMA LETRAS COMA LETRAS  PCERRADO PUNTOYCOMA otrainstr
+;
+otrainstr::= CADENA SIGMENOS MAYORQUE RETORNO funcion
+            | 
+;
+defconj::= NUMERO conjnum 
+        | LETRA conjlet
+;
+conjnum::= VIRGULILLA NUMERO PUNTOYCOMA
+           | COMA NUM otronum
+;
+otronum::= COMA NUM otronum
+        | 
+;
+            
+conjlet::= VIRGULILA LETRA PUNTOYCOMA
+        | COMA LETRA otraletra
+;
+otraletra::= COMA LETRA otraletra
+        | 
+;

@@ -5,6 +5,19 @@
  */
 package practica2edd;
 
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import javax.sound.sampled.AudioFormat;
+import okio.BufferedSink;
+
 /**
  *
  * @author Sergio
@@ -47,6 +60,11 @@ public class Matriz extends javax.swing.JFrame {
         });
 
         jButton2.setText("Agregar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Eliminar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -56,6 +74,11 @@ public class Matriz extends javax.swing.JFrame {
         });
 
         jButton4.setText("Buscar Letra");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Buscar Dominio");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -135,13 +158,50 @@ Inicio n=new Inicio();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        
+        RequestBody form= new FormEncodingBuilder()
+                .add("dm", jTextField4.getText())
+                .build();
+            String resp= getString("buscardom", form);
+            System.out.println(resp);
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        RequestBody form= new FormEncodingBuilder()
+                .add("dato", jTextField1.getText())
+                .build();
+            String resp= getString("addmatriz", form);
+            System.out.println(resp);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        RequestBody form= new FormEncodingBuilder()
+                .add("bl", jTextField3.getText())
+                .build();
+            String resp= getString("buscarletra", form);
+            System.out.println(resp);
+    }//GEN-LAST:event_jButton4ActionPerformed
+    
+    public static OkHttpClient webClient = new OkHttpClient();
+    public static String getString(String metodo, RequestBody formBody){
+        try {
+            URL url= new URL("http://127.0.0.1:5000/"+metodo);
+            Request req= new Request.Builder().url(url).post(formBody).build();
+            Response respuesta= webClient.newCall(req).execute();
+            String retorno=respuesta.body().string();
+            return retorno;
+        } catch (MalformedURLException ex) {
+            java.util.logging.Logger.getLogger(practica2edd.Practica2EDD.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(practica2edd.Practica2EDD.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    return null;
+    }
+    
     /**
      * @param args the command line arguments
      */
