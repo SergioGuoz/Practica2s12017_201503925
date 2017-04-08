@@ -5,14 +5,7 @@
  */
 package practica2edd;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
+
 import javax.swing.JFrame;
 
 /**
